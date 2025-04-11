@@ -1,33 +1,65 @@
 public abstract class DoubleLinkedList implements ILinkedList {
 
+    public class DllNode {
+
+        Object element;
+        DllNode next;
+        DllNode prev;
+    
+        public DllNode(DllNode prev, Object element, DllNode next) {
+            this.prev = prev;
+            this.element = element;
+            this.next = next;
+        }
+        
+    }
+
+
+    // Main Dummy Nodes & the size of the list
+    DllNode head;
+    DllNode tail;
+    int numOfNodes;
+
+    // Constructor
+    public DoubleLinkedList() {
+        head = new DllNode(null, null, null);
+        tail = new DllNode(head, null, null);
+        head.next = tail;
+        numOfNodes = 0;
+    }
+
+
+    // interface methods
+
+    
     @Override
-    public abstract void add(int index, Object element);
+    public void add(int index, Object element){}
 
     @Override
-    public abstract void add(Object element);
+    public void add(Object element){}
 
     @Override
-    public abstract Object get(int index);
+    public Object get(int index){}
 
     @Override
-    public abstract void set(int index, Object element);
+    public void set(int index, Object element){}
 
     @Override
-    public abstract void clear();
+    public void clear(){}
 
     @Override
-    public abstract boolean isEmpty();
+    public boolean isEmpty(){}
 
     @Override
-    public abstract void remove(int index);
+    public void remove(int index){}
 
     @Override
-    public abstract int size();
+    public int size(){}
 
     @Override
-    public abstract ILinkedList sublist(int fromIndex, int toIndex);
+    public ILinkedList sublist(int fromIndex, int toIndex){}
 
     @Override
-    public abstract boolean contains(Object o);
+    public boolean contains(Object o){}
 
 }

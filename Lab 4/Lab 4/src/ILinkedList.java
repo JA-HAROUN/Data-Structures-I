@@ -7,10 +7,6 @@ public interface ILinkedList {
      */
     public void add(int index, Object element);
 
-    /**
-     * Inserts the specified element at the end of the list.
-     * param element
-     */
     public void add(Object element);
 
     /**
