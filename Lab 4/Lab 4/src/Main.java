@@ -345,7 +345,7 @@ public class Main {
 
                     // check which polynomial
                     if (poly == 'A' && polysCheck[0] == 1){
-                        System.out.println(PolynomialSolver.print('A'));
+                        System.out.println(polynomialSolver.print('A'));
                     }
                     else if (poly == 'B' && polysCheck[1] == 1){
                         System.out.println(polynomialSolver.print('B'));
