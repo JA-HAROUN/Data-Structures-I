@@ -33,33 +33,35 @@ public abstract class DoubleLinkedList implements ILinkedList {
 
     
     @Override
-    public void add(int index, Object element){}
+    public void add(int index, Object element){return;}
 
     @Override
-    public void add(Object element){}
+    public void add(Object element){return;}
 
     @Override
-    public Object get(int index){}
+    public Object get(int index){return null;}
 
     @Override
-    public void set(int index, Object element){}
+    public void set(int index, Object element){return;}
 
     @Override
-    public void clear(){}
+    public void clear(){return;}
 
     @Override
-    public boolean isEmpty(){}
+    public boolean isEmpty(){return false;}
 
     @Override
-    public void remove(int index){}
+    public void remove(int index){return;}
 
     @Override
-    public int size(){}
+    public int size(){return 0;}
 
     @Override
-    public ILinkedList sublist(int fromIndex, int toIndex){}
+    public ILinkedList sublist(int fromIndex, int toIndex){
+        return null;
+    }
 
     @Override
-    public boolean contains(Object o){}
+    public boolean contains(Object o){return false;}
 
 }
