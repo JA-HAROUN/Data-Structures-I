@@ -37,7 +37,7 @@ public class SingleLinkedList implements ILinkedList {
     @Override
     public void add(int index, Object element) {
         // check if out of boundaries
-        if (index < 0 || index > numOfNodes) { 
+        if (index < 0 || index >= numOfNodes) {
             throw new IndexOutOfBoundsException();
         }
 
@@ -137,7 +137,7 @@ public class SingleLinkedList implements ILinkedList {
         // check if out of boundaries
         if (fromIndex >= numOfNodes || fromIndex < 0 || toIndex >= numOfNodes || toIndex < 0 || fromIndex > toIndex)
         {
-            return null;
+            throw new IndexOutOfBoundsException();
         }
 
         // search
