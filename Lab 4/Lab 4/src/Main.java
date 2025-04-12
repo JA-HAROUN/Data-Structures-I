@@ -27,7 +27,7 @@ public class Main {
             }
             System.out.print("]");
             
-        }
+    }
     
         public static void main(String[] args) {
 
@@ -50,7 +50,7 @@ public class Main {
                     // check if the value is empty
                     if (!value.isEmpty()) {
                         // add the value to the list
-                        list.add(value);
+                        list.add(Integer.parseInt(value));
                     }
                 }
 
@@ -124,6 +124,8 @@ public class Main {
 
                     // clear the inputList
                     list.clear();
+
+                    printList(list);
 
                 }
 
@@ -207,11 +209,8 @@ public class Main {
                     // get the element
                     int element = scanner.nextInt();
 
-                    // check if the inputList contains the element
-                    boolean contains = list.contains(element);
-
                     // print the result
-                    if (contains)
+                    if (list.contains(element))
                     {
                         System.out.println("True");
                     }

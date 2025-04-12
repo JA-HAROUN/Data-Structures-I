@@ -25,14 +25,19 @@ public class SingleLinkedList implements ILinkedList {
         numOfNodes = 0;
     }
 
+    void boundsCheck(int index) {
+        if (index < 0 || index >= numOfNodes) {
+            throw new IndexOutOfBoundsException();
+        }
+    }
+
     // interface methods
 
     // Done
     @Override
-    public void add(int index, Object element)
-    {
+    public void add(int index, Object element) {
         // check if out of boundaries
-        if (index > numOfNodes || index < 0)
+        if (index < 0)
         {
             return;
         }
@@ -70,10 +75,7 @@ public class SingleLinkedList implements ILinkedList {
     public Object get(int index) {
 
         // check if out of boundaries
-        if (index > numOfNodes || index < 0)
-        {
-            return null;
-        }
+        boundsCheck(index);
 
         // search
         SllNode current = head.next;
@@ -85,12 +87,9 @@ public class SingleLinkedList implements ILinkedList {
     }
 
     @Override 
-    public void set(int index, Object element){
+    public void set(int index, Object element) {
         // check if out of boundaries
-        if (index > numOfNodes || index < 0)
-        {
-            return;
-        }
+        boundsCheck(index);
 
         // search
         SllNode current = head.next;
@@ -101,22 +100,22 @@ public class SingleLinkedList implements ILinkedList {
     }
 
     @Override 
-    public void clear(){
+    public void clear() {
         while (head.next != tail){
             head.next=head.next.next;
         }
+        numOfNodes=0;
     }
     
     @Override 
-    public boolean isEmpty(){
+    public boolean isEmpty() {
         return numOfNodes == 0;
     }
 
     @Override 
     public void remove(int index){
-        if (index > numOfNodes || index < 0){
-            return;
-        }
+        boundsCheck(index);
+
         // search
         SllNode current = head;
         for (int k = 0; k < index; k++){
@@ -130,16 +129,14 @@ public class SingleLinkedList implements ILinkedList {
     }
 
     @Override 
-    public int size() 
-    {
+    public int size() {
         return numOfNodes;
     }
 
     @Override 
-    public ILinkedList sublist(int fromIndex, int toIndex) 
-    {
+    public ILinkedList sublist(int fromIndex, int toIndex) {
         // check if out of boundaries
-        if (fromIndex > numOfNodes || fromIndex < 0 || toIndex > numOfNodes || toIndex < 0 || fromIndex > toIndex)
+        if (fromIndex >= numOfNodes || fromIndex < 0 || toIndex >= numOfNodes || toIndex < 0 || fromIndex > toIndex)
         {
             return null;
         }
@@ -161,25 +158,27 @@ public class SingleLinkedList implements ILinkedList {
         SllNode sublistHead = sublist.head;
         sublistHead.next = sublist.tail;
 
+        SllNode sublistPointer = sublistHead;
+
         // add the elements to the sublist
-        for (int k = fromIndex; k < toIndex; k++){
+        for (int k = fromIndex; k <= toIndex; k++){
             SllNode newNode = new SllNode(current.element, null);
-            sublistHead.next = newNode;
-            sublistHead = newNode;
+            sublistPointer.next = newNode;
+            sublistPointer = newNode;
             current = current.next;
         }
 
         // make the tail of the sublist and add the size
-        sublistHead.next = sublist.tail;
-        sublist.numOfNodes = toIndex - fromIndex;
+        sublistPointer.next = sublist.tail;
+
+        sublist.numOfNodes = toIndex - fromIndex + 1;
 
         // return the sublist
         return sublist;
     }
 
     @Override
-    public boolean contains(Object o)
-    {
+    public boolean contains(Object o) {
         SllNode current = head.next;
         while (current != tail){
             if (current.element.equals(o)){
