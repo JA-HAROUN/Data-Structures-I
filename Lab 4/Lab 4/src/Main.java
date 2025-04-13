@@ -259,7 +259,7 @@ public class Main {
         } */
 
         // 2 - DoubleLinkedList part
-        /**/
+
 
         // 3 - PolynomialSolver part
 
@@ -270,7 +270,7 @@ public class Main {
          * A Polynomial can have negative exponent
          */
 
-        try (Scanner scanner = new Scanner(System.in)){
+        /*try (Scanner scanner = new Scanner(System.in)){
 
             PolynomialSolver polynomialSolver = new PolynomialSolver();
 
@@ -279,11 +279,11 @@ public class Main {
             // first thing the order
             String order = scanner.nextLine().trim();
             
-            /* 
+            *//*
             the app should run until we get => add, clear, multiply, or subtract
 
             if it is print or set it should continue
-            */
+            *//*
             int[] polysCheck = new int[3];
             for (int i = 0; i < 3; i++) {
                 polysCheck[i] = 0;
@@ -364,7 +364,7 @@ public class Main {
 
             }
 
-            /* now as the setting is done it is the time for the operations */
+            *//* now as the setting is done it is the time for the operations *//*
 
             // 2. input the operation
 
@@ -560,6 +560,7 @@ public class Main {
         catch (Exception e) {
             System.out.println("Error");
         }
+        */
 
     }
 
