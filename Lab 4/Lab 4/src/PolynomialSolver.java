@@ -7,56 +7,6 @@ public class PolynomialSolver implements IPolynomialSolver {
     public DoubleLinkedList C;
     public DoubleLinkedList R;
 
-/*     // function add with accumulator to R
-    public void addToR(DoubleLinkedList list) {
-        // check if the list is empty
-        if (list.isEmpty()) {
-            throw new IllegalArgumentException("List is empty");
-        }
-
-        // if R is empty then just add the list to R
-        if (R.isEmpty()) {
-            for (int i = 0; i < list.size(); i++) {
-                int[] term = (int[]) list.get(i);
-                R.add(term);
-            }
-        }
-
-        // else : AKA R has elements then accumulate
-        // just add two elements if and only if the exponents are equal, there is just
-        // one node with the needed exponent
-        // the input list is ordered descending
-        // i should loop in the R with these options
-        // 1- if i found it just add
-        // 2- if i the exponent doesnot exist i should put it in the right place as follow:
-        // as the list is descending if it is less than in R skip
-        // if it is equal add
-        // if it is greater than in R then put it in the right place
-        else {
-            for (int i = 0; i < list.size(); i++) {
-                int[] term = (int[]) list.get(i);
-                // check if the exponent is already in R
-                for (int j = 0; j < R.size(); j++) {
-                    int[] termR = (int[]) R.get(j);
-                    // check if the exponent is equal
-                    if (term[1] == termR[1]) {
-                        // add the coefficients
-                        termR[0] += term[0];
-                        break;
-                    }
-                    // if R is smaller then use the add(index, element) function
-                    else if (term[1] > termR[1]) {
-                        // add the term to the right place
-                        R.add(j, term);
-                        break;
-                    }
-
-                }
-            }
-        }
-
-    }
- */
     // check if valid polynomial
     public void checkPolynomial(char poly) {
         if (poly != 'A' && poly != 'B' && poly != 'C' && poly != 'R') {
@@ -421,240 +371,7 @@ public class PolynomialSolver implements IPolynomialSolver {
 
         // get the max exponent of the result
         int maxExponent = maxExponentPoly1 + maxExponentPoly2;
-/* 
-        // create the result 2d array
-        int[][] result = new int[2][maxExponent + 1];
-
-        // create the linked list which will pass to addToR
-        DoubleLinkedList passToR = new DoubleLinkedList();
- */
-        // do the multiplication as I didn't do it Ahmed
-        /*
-         * How did I multiply two polynomials?
-         * 1- I multiply on term from the first polynomial with all the terms in the
-         * second polynomial
-         * 2- I add the result to the R array
-         * 3- I repeat the process for all the terms in the first polynomial
-         * 4- I put the R array in the result array
-         * 5- I return the result array
-         * 
-         * once the adding is done put the R list in the result array and order it with
-         * the fastest algorithm
-         */
-/* 
-        // check which two polynomials to multiply
-        // A * B
-        if ((poly1 == 'A' && poly2 == 'B') || (poly1 == 'B' && poly2 == 'A')) {
-            // multiply the two polynomials
-            for (int i = 0; i < A.size(); i++) {
-                // looping through each element
-                int[] term1 = (int[]) A.get(i);
-                // get the coefficient and exponent
-                int coefficient1 = term1[0];
-                int exponent1 = term1[1];
-                
-                // loop through the second polynomial
-                for (int j = 0; j < B.size(); j++) {
-                    // get the coefficient and exponent
-                    int[] term2 = (int[]) B.get(j);
-                    int coefficient2 = term2[0];
-                    int exponent2 = term2[1];
-
-                    // multiply the coefficients and add the exponents
-                    int coefficientResult = coefficient1 * coefficient2;
-                    int exponentResult = exponent1 + exponent2;
-                    int [] termResult = new int[] { coefficientResult, exponentResult };
-
-                    // add to passToR
-                    passToR.add(termResult);
-                }
-
-                // accumulate in the R list
-                addToR(passToR);
-
-                // clear the passToR list
-                passToR.clear();
-            }
-        }
-        
-        // A * C
-        else if ((poly1 == 'A' && poly2 == 'C') || (poly1 == 'C' && poly2 == 'A')) {
-            // multiply the two polynomials
-            for (int i = 0; i < A.size(); i++) {
-                // looping through each element
-                int[] term1 = (int[]) A.get(i);
-                // get the coefficient and exponent
-                int coefficient1 = term1[0];
-                int exponent1 = term1[1];
-
-                // loop through the second polynomial
-                for (int j = 0; j < C.size(); j++) {
-                    // get the coefficient and exponent
-                    int[] term2 = (int[]) C.get(j);
-                    int coefficient2 = term2[0];
-                    int exponent2 = term2[1];
-
-                    // multiply the coefficients and add the exponents
-                    int coefficientResult = coefficient1 * coefficient2;
-                    int exponentResult = exponent1 + exponent2;
-                    int [] termResult = new int[] { coefficientResult, exponentResult };
-
-                    // add to passToR
-                    passToR.add(termResult);
-                }
-
-                // accumulate in the R list
-                addToR(passToR);
-
-                // clear the passToR list
-                passToR.clear();
-            }
-        }
-
-        // B * C
-        else if ((poly1 == 'B' && poly2 == 'C') || (poly1 == 'C' && poly2 == 'B')) {
-            // multiply the two polynomials
-            for (int i = 0; i < B.size(); i++) {
-                // looping through each element
-                int[] term1 = (int[]) B.get(i);
-                // get the coefficient and exponent
-                int coefficient1 = term1[0];
-                int exponent1 = term1[1];
-
-                // loop through the second polynomial
-                for (int j = 0; j < C.size(); j++) {
-                    // get the coefficient and exponent
-                    int[] term2 = (int[]) C.get(j);
-                    int coefficient2 = term2[0];
-                    int exponent2 = term2[1];
-
-                    // multiply the coefficients and add the exponents
-                    int coefficientResult = coefficient1 * coefficient2;
-                    int exponentResult = exponent1 + exponent2;
-                    int [] termResult = new int[] { coefficientResult, exponentResult };
-
-                    // add to pass
-                    passToR.add(termResult);
-                }
-
-                // accumulate in the R list
-                addToR(passToR);
-
-                // clear the passToR list
-                passToR.clear();
-            }
-        }
-
-        // A * A
-        else if (poly1 == 'A' && poly2 == 'A') {
-            // multiply the two polynomials
-            for (int i = 0; i < A.size(); i++) {
-                // looping through each element
-                int[] term1 = (int[]) A.get(i);
-                // get the coefficient and exponent
-                int coefficient1 = term1[0];
-                int exponent1 = term1[1];
-
-                // loop through the second polynomial
-                for (int j = 0; j < A.size(); j++) {
-                    // get the coefficient and exponent
-                    int[] term2 = (int[]) A.get(j);
-                    int coefficient2 = term2[0];
-                    int exponent2 = term2[1];
-
-                    // multiply the coefficients and add the exponents
-                    int coefficientResult = coefficient1 * coefficient2;
-                    int exponentResult = exponent1 + exponent2;
-                    int [] termResult = new int[] { coefficientResult, exponentResult };
-
-                    // add to passToR
-                    passToR.add(termResult);
-                }
-
-                // accumulate in the R list
-                addToR(passToR);
-
-                // clear the passToR list
-                passToR.clear();
-            }
-        }
-
-        // B * B
-        else if (poly1 == 'B' && poly2 == 'B') {
-            // multiply the two polynomials
-            for (int i = 0; i < B.size(); i++) {
-                // looping through each element
-                int[] term1 = (int[]) B.get(i);
-                // get the coefficient and exponent
-                int coefficient1 = term1[0];
-                int exponent1 = term1[1];
-
-                // loop through the second polynomial
-                for (int j = 0; j < B.size(); j++) {
-                    // get the coefficient and exponent
-                    int[] term2 = (int[]) B.get(j);
-                    int coefficient2 = term2[0];
-                    int exponent2 = term2[1];
-
-                    // multiply the coefficients and add the exponents
-                    int coefficientResult = coefficient1 * coefficient2;
-                    int exponentResult = exponent1 + exponent2;
-                    int [] termResult = new int[] { coefficientResult, exponentResult };
-
-                    // add to passToR
-                    passToR.add(termResult);
-                }
-
-                // accumulate in the R list
-                addToR(passToR);
-
-                // clear the passToR list
-                passToR.clear();
-            }
-        }
-
-        // C * C
-        else if (poly1 == 'C' && poly2 == 'C') {
-            // multiply the two polynomials
-            for (int i = 0; i < C.size(); i++) {
-                // looping through each element
-                int[] term1 = (int[]) C.get(i);
-                // get the coefficient and exponent
-                int coefficient1 = term1[0];
-                int exponent1 = term1[1];
-
-                // loop through the second polynomial
-                for (int j = 0; j < C.size(); j++) {
-                    // get the coefficient and exponent
-                    int[] term2 = (int[]) C.get(j);
-                    int coefficient2 = term2[0];
-                    int exponent2 = term2[1];
-
-                    // multiply the coefficients and add the exponents
-                    int coefficientResult = coefficient1 * coefficient2;
-                    int exponentResult = exponent1 + exponent2;
-                    int [] termResult = new int[] { coefficientResult, exponentResult };
-
-                    // add to passToR
-                    passToR.add(termResult);
-                }
-
-                // accumulate in the R list
-                addToR(passToR);
-
-                // clear the passToR list
-                passToR.clear();
-            }
-        }
-
-        // put the R list in the result array
-        for (int i = 0; i < R.size(); i++) {
-            int[] term = (int[]) R.get(i);
-            result[0][i] = term[0];
-            result[1][i] = term[1];
-        }
- */
-        
+     
         // accumulation Array
         int[][] accumulation = new int[2][maxExponent + 1];
         int counterOfValidExponents = 0;
@@ -881,19 +598,19 @@ public class PolynomialSolver implements IPolynomialSolver {
 
         // change accumulator to R
         int[][] result = new int[2][counterOfValidExponents];
+        int index = 0;
         
-        for (int i = 0, j = 0; i < accumulation[0].length; i++) {
+        for (int i = 0; i < accumulation[0].length; i++) {
+            // check if the exponent is valid
             if (accumulation[1][i] != -1) {
-                result[0][j] = accumulation[0][i];
-                result[1][j] = accumulation[1][i];
-                j++;
+                result[0][index] = accumulation[0][i];
+                result[1][index] = accumulation[1][i];
+                index++;
             }
         }
  
         return result;
 
     }
-
-
     
 }
