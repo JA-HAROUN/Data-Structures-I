@@ -144,7 +144,7 @@ public class PolynomialSolver implements IPolynomialSolver {
 
         // check if the polynomial is empty
         if (isPolyEmpty(poly)) {
-            throw new IllegalArgumentException("Polynomial is empty");
+            throw new IllegalArgumentException();
         }
 
         // clear the polynomial
