@@ -1,7 +1,5 @@
-public class DoubleLinkedList implements ILinkedList {
-
-    public class DLnode {
-
+class DoubleLinkedList implements ILinkedList {
+    class DLnode {
         private Object element;
         private DLnode next;
         private DLnode prev;
@@ -13,7 +11,7 @@ public class DoubleLinkedList implements ILinkedList {
         }
 
         public DLnode(Object e, DLnode n, DLnode p) {
-            element = null;
+            element = e;
             next = n;
             prev = p;
         }
@@ -46,9 +44,7 @@ public class DoubleLinkedList implements ILinkedList {
     private DLnode header;
     private DLnode trailer;
 
-    // Constructor
     public DoubleLinkedList() {
-
         header = new DLnode();
         trailer = new DLnode();
         header.setnext(trailer);
@@ -61,13 +57,9 @@ public class DoubleLinkedList implements ILinkedList {
         }
     }
 
-    @ Override
+    @Override
     public boolean isEmpty() {
-        if (header.getnext() == trailer && trailer.getprev() == header) {
-            return true;
-        } else {
-            return false;
-        }
+        return header.getnext() == trailer && trailer.getprev() == header;
     }
 
     @Override
@@ -91,7 +83,7 @@ public class DoubleLinkedList implements ILinkedList {
     public boolean contains(Object o) {
         DLnode q = header.getnext();
         while (q != trailer) {
-            if (q.getElement() == o) {
+            if (q.getElement().equals(o)) {
                 return true;
             }
             q = q.getnext();
@@ -116,62 +108,48 @@ public class DoubleLinkedList implements ILinkedList {
         DLnode addedNode = new DLnode();
         addedNode.setElement(element);
 
-        DLnode q = header.getnext();
-        int i = 0;
-
         boundsCheck(index);
 
-        while (q != trailer) {
-            if (i != index) {
-                q = q.getnext();
-                i++;
-            } else {
-                break;
-            }
+        DLnode q = header.getnext();
+        int i = 0;
+        while (i < index) {
+            q = q.getnext();
+            i++;
         }
 
         DLnode w = q.getprev();
         w.setnext(addedNode);
         addedNode.setprev(w);
-
         addedNode.setnext(q);
         q.setprev(addedNode);
     }
 
     @Override
     public void remove(int index) {
-        DLnode q = header.getnext();
-        int i = 0;
         boundsCheck(index);
 
-        while (q != trailer) {
-            if (i != index) {
-                q = q.getnext();
-                i++;
-            } else {
-                break;
-            }
+        DLnode q = header.getnext();
+        int i = 0;
+        while (i < index) {
+            q = q.getnext();
+            i++;
         }
+
         DLnode n = q.getnext();
         DLnode p = q.getprev();
-
         p.setnext(n);
         n.setprev(p);
     }
 
     @Override
     public Object get(int index) {
-        DLnode q = header.getnext();
-        int i = 0;
         boundsCheck(index);
 
-        while (q != trailer) {
-            if (i != index) {
-                q = q.getnext();
-                i++;
-            } else {
-                break;
-            }
+        DLnode q = header.getnext();
+        int i = 0;
+        while (i < index) {
+            q = q.getnext();
+            i++;
         }
 
         return q.getElement();
@@ -179,55 +157,38 @@ public class DoubleLinkedList implements ILinkedList {
 
     @Override
     public void set(int index, Object element) {
-        DLnode q = header.getnext();
-        int i = 0;
         boundsCheck(index);
 
-        while (q != trailer) {
-            if (i != index) {
-                q = q.getnext();
-                i++;
-            } else {
-                break;
-            }
+        DLnode q = header.getnext();
+        int i = 0;
+        while (i < index) {
+            q = q.getnext();
+            i++;
         }
 
         q.setElement(element);
     }
 
     @Override
-    public ILinkedList sublist(int fromIndex, int toIndex){
-        DLnode q = header.getnext();
-        DLnode w = header.getnext();
-        int i = 0;
-
-        if(fromIndex > toIndex){
+    public ILinkedList sublist(int fromIndex, int toIndex) {
+        if (fromIndex > toIndex) {
             throw new IndexOutOfBoundsException();
         }
-
         boundsCheck(fromIndex);
         boundsCheck(toIndex);
 
-        while (q != trailer) {
-            if (i != fromIndex) {
-                q = q.getnext();
-                i++;
-            }
-            else{
-                break;
-            }
+        DLnode q = header.getnext();
+        int i = 0;
+        while (i < fromIndex) {
+            q = q.getnext();
+            i++;
         }
 
+        DLnode w = header.getnext();
         i = 0;
-
-        while (w != trailer) {
-            if (i != toIndex) {
-                w = w.getnext();
-                i++;
-            }
-            else{
-                break;
-            }
+        while (i < toIndex) {
+            w = w.getnext();
+            i++;
         }
 
         header.setnext(q);
