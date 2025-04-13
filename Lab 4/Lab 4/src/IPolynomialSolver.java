@@ -11,7 +11,7 @@ interface IPolynomialSolver {
      * param poly: name of the polynomial
      * return: polynomial in the form like 27x^2+x-1
      */
-    int[][] print(char poly);
+    String print(char poly);
 
     /**
      * Clear the polynomial

@@ -95,7 +95,7 @@ public class PolynomialSolver implements IPolynomialSolver{
 
     // not done yet
     @Override
-    public int[][] print(char poly) {
+    public String print(char poly) {
         /*
          * I should print it in a way like:
          * 27x^2+x-1
@@ -156,40 +156,41 @@ public class PolynomialSolver implements IPolynomialSolver{
             // get the exponent
             int exponent = (int) exponents.get(i);
 
-        // for loop to get the result
-        for (int j = 0; j < coefficients.size(); j++) {
-            // put the coefficient
+            // for loop to get the result
+            for (int j = 0; j < coefficients.size(); j++) {
+                // put the coefficient
 
-            // check if the coefficient is positive
-            if (coefficient > 0 && j != 0) {
-                resultOutput += "+";
+                // check if the coefficient is positive
+                if (coefficient > 0 && j != 0) {
+                    resultOutput += "+";
+                }
+
+                // check if the coefficient is negative
+                else if (coefficient < 0) {
+                    resultOutput += "-";
+                    coefficient = -coefficient;
+                }
+
+                // put the exponents
+                // check if the exponent is 0
+                if (exponent == 0) {
+                    resultOutput += coefficient;
+                }
+
+                // check if the exponent is 1
+                else if (exponent == 1) {
+                    resultOutput += coefficient + "x";
+                }
+
+                // check if the exponent is greater than 1
+                else {
+                    resultOutput += coefficient + "x^" + exponent;
+                }
+
             }
-
-            // check if the coefficient is negative
-            else if (coefficient < 0) {
-                resultOutput += "-";
-                coefficient = -coefficient;
-            }
-
-            // put the exponents
-            // check if the exponent is 0
-            if (exponent == 0) {
-                resultOutput += coefficient;
-            }
-
-            // check if the exponent is 1
-            else if (exponent == 1) {
-                resultOutput += coefficient + "x";
-            }
-
-            // check if the exponent is greater than 1
-            else {
-                resultOutput += coefficient + "x^" + exponent;
-            }
-
         }
 
-        return result;
+        return resultOutput;
     }
 
 
