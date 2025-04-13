@@ -51,7 +51,7 @@ public class PolynomialSolver implements IPolynomialSolver {
 
         // check if the polynomial is empty
         if (!isPolyEmpty(poly)) {
-            throw new IllegalArgumentException("Polynomial is not empty");
+            throw new IllegalArgumentException();
         }
 
         // set the polynomial
