@@ -198,21 +198,29 @@ public class PolynomialSolver implements IPolynomialSolver {
         // we should loop with the bigger but stop adding when the smaller ends and
         // after that just put the rest of the bigger
 
-        // loop through the coefficients
-        for (int i = 0; i < Math.max(polynomial1.size(), polynomial2.size()); i++) {
+        int maxSize = Math.max(polynomial1.size(), polynomial2.size());
+
+
+
+        // edit the addition and subtraction
+
+
+
+        // loop through the coefficients , it should start from the tail to the head
+        for (int i = maxSize - 1; i >= 0; i--) {
             // get the coefficient
             int coefficient1 = 0;
             int coefficient2 = 0;
 
-            // check if the first polynomial is empty
+            // if i is bigger than the first polynomial size then keep it zero else take the value
             if (i < polynomial1.size()) {
-                int[] term1 = (int[]) A.get(i);
+                int[] term1 = (int[]) polynomial1.get(i);
                 coefficient1 = term1[0];
             }
 
-            // check if the second polynomial is empty
+            // if i is bigger than the second polynomial size then keep it zero else take the value
             if (i < polynomial2.size()) {
-                int[] term2 = (int[]) B.get(i);
+                int[] term2 = (int[]) polynomial2.get(i);
                 coefficient2 = term2[0];
             }
 
@@ -222,7 +230,7 @@ public class PolynomialSolver implements IPolynomialSolver {
             // as we go from the right we should put the exponent in the left in the result
             // array
 
-            result[1][i] = Math.max(polynomial1.size() - i - 1, polynomial2.size() - i - 1);
+            result[1][i] = maxSize - i - 1;
         }
 
         return result;
@@ -243,11 +251,13 @@ public class PolynomialSolver implements IPolynomialSolver {
         // we should loop with the bigger but stop subtracting when the smaller ends and
         // after that just put the rest of the bigger
 
+        int maxSize = Math.max(polynomial1.size(), polynomial2.size());
+
         // create the result 2d array
-        int[][] result = new int[2][Math.max(polynomial1.size(), polynomial2.size())];
+        int[][] result = new int[2][maxSize];
 
         // loop through the coefficients
-        for (int i = 0; i < Math.max(polynomial1.size(), polynomial2.size()); i++) {
+        for (int i = maxSize; i >= 0; i--) {
             // get the coefficient
             int coefficient1 = 0;
             int coefficient2 = 0;
@@ -269,7 +279,7 @@ public class PolynomialSolver implements IPolynomialSolver {
 
             // as we go from the right we should put the exponent in the left in the result
             // array
-            result[1][i] = Math.max(polynomial1.size() - i - 1, polynomial2.size() - i - 1);
+            result[1][i] = maxSize - i - 1;
         }
 
         return result;
