@@ -363,6 +363,10 @@ public class PolynomialSolver implements IPolynomialSolver {
                 index++;
             }
         }
+
+
+        // clear R for print
+        R.clear();
  
         return result;
 
