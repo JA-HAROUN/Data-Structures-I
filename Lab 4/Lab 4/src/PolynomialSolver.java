@@ -7,7 +7,7 @@ public class PolynomialSolver implements IPolynomialSolver {
     public DoubleLinkedList C;
     public DoubleLinkedList R;
 
-    // function add with accumulator to R
+/*     // function add with accumulator to R
     public void addToR(DoubleLinkedList list) {
         // check if the list is empty
         if (list.isEmpty()) {
@@ -56,7 +56,7 @@ public class PolynomialSolver implements IPolynomialSolver {
         }
 
     }
-
+ */
     // check if valid polynomial
     public void checkPolynomial(char poly) {
         if (poly != 'A' && poly != 'B' && poly != 'C' && poly != 'R') {
@@ -405,6 +405,7 @@ public class PolynomialSolver implements IPolynomialSolver {
     // Done [Maybe I'm not sure]
     @Override
     public int[][] multiply(char poly1, char poly2) {
+
         // check if the polynomial is valid
         checkPolynomial(poly1);
         checkPolynomial(poly2);
@@ -420,13 +421,13 @@ public class PolynomialSolver implements IPolynomialSolver {
 
         // get the max exponent of the result
         int maxExponent = maxExponentPoly1 + maxExponentPoly2;
-
+/* 
         // create the result 2d array
         int[][] result = new int[2][maxExponent + 1];
 
         // create the linked list which will pass to addToR
         DoubleLinkedList passToR = new DoubleLinkedList();
-
+ */
         // do the multiplication as I didn't do it Ahmed
         /*
          * How did I multiply two polynomials?
@@ -440,7 +441,7 @@ public class PolynomialSolver implements IPolynomialSolver {
          * once the adding is done put the R list in the result array and order it with
          * the fastest algorithm
          */
-
+/* 
         // check which two polynomials to multiply
         // A * B
         if ((poly1 == 'A' && poly2 == 'B') || (poly1 == 'B' && poly2 == 'A')) {
@@ -652,8 +653,247 @@ public class PolynomialSolver implements IPolynomialSolver {
             result[0][i] = term[0];
             result[1][i] = term[1];
         }
+ */
+        
+        // accumulation Array
+        int[][] accumulation = new int[2][maxExponent + 1];
+        int counterOfValidExponents = 0;
 
+        // initialize the accumulation array with 0's in coefficients and -1 in exponents
+        for (int i = 0; i < accumulation[0].length; i++) {
+            accumulation[0][i] = 0;
+            accumulation[1][i] = -1;
+        }
+
+        // build the accumulator multiplication
+
+        // A * B
+        if ((poly1 == 'A' && poly2 == 'B') || (poly1 == 'B' && poly2 == 'A')) {
+            // multiply the two polynomials
+            for (int i = 0; i < A.size(); i++) {
+                // looping through each element
+                int[] term1 = (int[]) A.get(i);
+                // get the coefficient and exponent
+                int coefficient1 = term1[0];
+                int exponent1 = term1[1];
+
+                // loop through the second polynomial
+                for (int j = 0; j < B.size(); j++) {
+                    // get the coefficient and exponent
+                    int[] term2 = (int[]) B.get(j);
+                    int coefficient2 = term2[0];
+                    int exponent2 = term2[1];
+
+                    // multiply the coefficients and add the exponents
+                    int coefficientResult = coefficient1 * coefficient2;
+                    int exponentResult = exponent1 + exponent2;
+
+                    // if exponent doesn't exist just initialize , else add
+                    if (accumulation[1][exponentResult] == -1) {
+                        accumulation[0][exponentResult] = coefficientResult;
+                        accumulation[1][exponentResult] = exponentResult;
+                        counterOfValidExponents++;
+                    }
+                    else {
+                        accumulation[0][exponentResult] += coefficientResult;
+                        accumulation[1][exponentResult] = exponentResult;
+
+                    }
+                }
+            }
+        }
+        
+        // A * C
+        else if ((poly1 == 'A' && poly2 == 'C') || (poly1 == 'C' && poly2 == 'A')) {
+            // multiply the two polynomials
+            for (int i = 0; i < A.size(); i++) {
+                // looping through each element
+                int[] term1 = (int[]) A.get(i);
+                // get the coefficient and exponent
+                int coefficient1 = term1[0];
+                int exponent1 = term1[1];
+
+                // loop through the second polynomial
+                for (int j = 0; j < C.size(); j++) {
+                    // get the coefficient and exponent
+                    int[] term2 = (int[]) C.get(j);
+                    int coefficient2 = term2[0];
+                    int exponent2 = term2[1];
+
+                    // multiply the coefficients and add the exponents
+                    int coefficientResult = coefficient1 * coefficient2;
+                    int exponentResult = exponent1 + exponent2;
+
+                    // if exponent doesn't exist just initialize , else add
+                    if (accumulation[1][exponentResult] == -1) {
+                        accumulation[0][exponentResult] = coefficientResult;
+                        accumulation[1][exponentResult] = exponentResult;
+                        counterOfValidExponents++;
+                    }
+                    else {
+                        accumulation[0][exponentResult] += coefficientResult;
+                        accumulation[1][exponentResult] = exponentResult;
+                    }
+                }
+            }
+        }
+        
+        // B * C
+        else if ((poly1 == 'B' && poly2 == 'C') || (poly1 == 'C' && poly2 == 'B')) {
+            // multiply the two polynomials
+            for (int i = 0; i < B.size(); i++) {
+                // looping through each element
+                int[] term1 = (int[]) B.get(i);
+                // get the coefficient and exponent
+                int coefficient1 = term1[0];
+                int exponent1 = term1[1];
+
+                // loop through the second polynomial
+                for (int j = 0; j < C.size(); j++) {
+                    // get the coefficient and exponent
+                    int[] term2 = (int[]) C.get(j);
+                    int coefficient2 = term2[0];
+                    int exponent2 = term2[1];
+
+                    // multiply the coefficients and add the exponents
+                    int coefficientResult = coefficient1 * coefficient2;
+                    int exponentResult = exponent1 + exponent2;
+
+                    // if exponent doesn't exist just initialize , else add
+                    if (accumulation[1][exponentResult] == -1) {
+                        accumulation[0][exponentResult] = coefficientResult;
+                        accumulation[1][exponentResult] = exponentResult;
+                        counterOfValidExponents++;
+                    }
+                    else {
+                        accumulation[0][exponentResult] += coefficientResult;
+                        accumulation[1][exponentResult] = exponentResult;
+                    }
+                }
+            }
+        }
+        
+        // A * A
+        else if (poly1 == 'A' && poly2 == 'A') {
+            // multiply the two polynomials
+            for (int i = 0; i < A.size(); i++) {
+                // looping through each element
+                int[] term1 = (int[]) A.get(i);
+                // get the coefficient and exponent
+                int coefficient1 = term1[0];
+                int exponent1 = term1[1];
+
+                // loop through the second polynomial
+                for (int j = 0; j < A.size(); j++) {
+                    // get the coefficient and exponent
+                    int[] term2 = (int[]) A.get(j);
+                    int coefficient2 = term2[0];
+                    int exponent2 = term2[1];
+
+                    // multiply the coefficients and add the exponents
+                    int coefficientResult = coefficient1 * coefficient2;
+                    int exponentResult = exponent1 + exponent2;
+
+                    // if exponent doesn't exist just initialize , else add
+                    if (accumulation[1][exponentResult] == -1) {
+                        accumulation[0][exponentResult] = coefficientResult;
+                        accumulation[1][exponentResult] = exponentResult;
+                        counterOfValidExponents++;
+                    }
+                    else {
+                        accumulation[0][exponentResult] += coefficientResult;
+                        accumulation[1][exponentResult] = exponentResult;
+                    }
+                }
+            }
+        }
+
+        // B * B
+        else if (poly1 == 'B' && poly2 == 'B') {
+            // multiply the two polynomials
+            for (int i = 0; i < B.size(); i++) {
+                // looping through each element
+                int[] term1 = (int[]) B.get(i);
+                // get the coefficient and exponent
+                int coefficient1 = term1[0];
+                int exponent1 = term1[1];
+
+                // loop through the second polynomial
+                for (int j = 0; j < B.size(); j++) {
+                    // get the coefficient and exponent
+                    int[] term2 = (int[]) B.get(j);
+                    int coefficient2 = term2[0];
+                    int exponent2 = term2[1];
+
+                    // multiply the coefficients and add the exponents
+                    int coefficientResult = coefficient1 * coefficient2;
+                    int exponentResult = exponent1 + exponent2;
+
+                    // if exponent doesn't exist just initialize , else add
+                    if (accumulation[1][exponentResult] == -1) {
+                        accumulation[0][exponentResult] = coefficientResult;
+                        accumulation[1][exponentResult] = exponentResult;
+                        counterOfValidExponents++;
+                    }
+                    else {
+                        accumulation[0][exponentResult] += coefficientResult;
+                        accumulation[1][exponentResult] = exponentResult;
+                    }
+                }
+            }
+        }
+        
+        // C * C
+        else if (poly1 == 'C' && poly2 == 'C') {
+            // multiply the two polynomials
+            for (int i = 0; i < C.size(); i++) {
+                // looping through each element
+                int[] term1 = (int[]) C.get(i);
+                // get the coefficient and exponent
+                int coefficient1 = term1[0];
+                int exponent1 = term1[1];
+
+                // loop through the second polynomial
+                for (int j = 0; j < C.size(); j++) {
+                    // get the coefficient and exponent
+                    int[] term2 = (int[]) C.get(j);
+                    int coefficient2 = term2[0];
+                    int exponent2 = term2[1];
+
+                    // multiply the coefficients and add the exponents
+                    int coefficientResult = coefficient1 * coefficient2;
+                    int exponentResult = exponent1 + exponent2;
+
+                    // if exponent doesn't exist just initialize , else add
+                    if (accumulation[1][exponentResult] == -1) {
+                        accumulation[0][exponentResult] = coefficientResult;
+                        accumulation[1][exponentResult] = exponentResult;
+                        counterOfValidExponents++;
+                    }
+                    else {
+                        accumulation[0][exponentResult] += coefficientResult;
+                        accumulation[1][exponentResult] = exponentResult;
+                    }
+                }
+            }
+        }
+
+
+        // change accumulator to R
+        int[][] result = new int[2][counterOfValidExponents];
+        
+        for (int i = 0, j = 0; i < accumulation[0].length; i++) {
+            if (accumulation[1][i] != -1) {
+                result[0][j] = accumulation[0][i];
+                result[1][j] = accumulation[1][i];
+                j++;
+            }
+        }
+ 
         return result;
 
     }
+
+
+    
 }
