@@ -378,6 +378,9 @@ public class PolynomialSolver implements IPolynomialSolver{
 
         // get the max exponent of the result
         int maxExponent = maxExponentPoly1 + maxExponentPoly2;
+
+
+        // do the multiplication as I didn't do it Ahmed
         
         return new int[2][maxExponent + 1];
     }
