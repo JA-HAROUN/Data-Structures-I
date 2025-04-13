@@ -288,88 +288,47 @@ public class PolynomialSolver implements IPolynomialSolver {
     // Done [Maybe I'm not sure]
     @Override
     public int[][] multiply(char poly1, char poly2) {
-
-        // check if the polynomial is valid
-        DoubleLinkedList polynomial1 = charToPoly(poly1);
-        DoubleLinkedList polynomial2 = charToPoly(poly2);
-
-        // check if the polynomials are empty
-        if (polynomial1.isEmpty() || polynomial2.isEmpty()) {
+        // Get the polynomial lists
+        DoubleLinkedList polyList1 = charToPoly(poly1);
+        DoubleLinkedList polyList2 = charToPoly(poly2);
+    
+        // Check for empty polynomials
+        if (polyList1.isEmpty() || polyList2.isEmpty()) {
             throw new IllegalArgumentException("Polynomials are empty");
         }
-
-        // check the biggest exponent in the two polynomials
-        int maxExponentPoly1 = polynomial1.size() - 1;
-        int maxExponentPoly2 = polynomial2.size() - 1;
-
-        // get the max exponent of the result
-        int maxExponent = maxExponentPoly1 + maxExponentPoly2;
-     
-        // accumulation Array
-        int[][] accumulation = new int[2][maxExponent + 1];
-        int counterOfValidExponents = 0;
-
-        // initialize the accumulation array with 0's in coefficients and -1 in exponents
-        for (int i = 0; i < accumulation[0].length; i++) {
-            accumulation[0][i] = 0;
-            accumulation[1][i] = -1;
-        }
-
-        // build the accumulator multiplication
-
-        // multiply the two polynomials
-        for (int i = 0; i < polynomial1.size(); i++) {
-            // looping through each element
-            int[] term1 = (int[]) polynomial1.get(i);
-            // get the coefficient and exponent
-            int coefficient1 = term1[0];
-            int exponent1 = term1[1];
-
-            // loop through the second polynomial
-            for (int j = 0; j < polynomial2.size(); j++) {
-                // get the coefficient and exponent
-                int[] term2 = (int[]) polynomial2.get(j);
-                int coefficient2 = term2[0];
-                int exponent2 = term2[1];
-
-                // multiply the coefficients and add the exponents
-                int coefficientResult = coefficient1 * coefficient2;
-                int exponentResult = exponent1 + exponent2;
-
-                // if exponent doesn't exist just initialize , else add
-                if (accumulation[1][exponentResult] == -1) {
-                    accumulation[0][exponentResult] = coefficientResult;
-                    accumulation[1][exponentResult] = exponentResult;
-                    counterOfValidExponents++;
-                }
-                else {
-                    accumulation[0][exponentResult] += coefficientResult;
-                    accumulation[1][exponentResult] = exponentResult;
-
-                }
+    
+        // Calculate maximum exponents based on polynomial sizes
+        int size1 = polyList1.size();
+        int size2 = polyList2.size();
+        int maxExp = (size1 - 1) + (size2 - 1);
+    
+        // Create accumulation array for coefficients
+        int[] coeffAccumulator = new int[maxExp + 1];
+    
+        // Multiply all term combinations
+        for (int i = 0; i < size1; i++) {
+            int[] term1 = (int[]) polyList1.get(i);
+            int coeff1 = term1[0];
+            int exp1 = size1 - 1 - i;  // Calculate exponent based on position
+    
+            for (int j = 0; j < size2; j++) {
+                int[] term2 = (int[]) polyList2.get(j);
+                int coeff2 = term2[0];
+                int exp2 = size2 - 1 - j;  // Calculate exponent based on position
+    
+                int resultExp = exp1 + exp2;
+                coeffAccumulator[resultExp] += coeff1 * coeff2;
             }
         }
-        
-
-        // change accumulator to R
-        int[][] result = new int[2][counterOfValidExponents];
-        int index = 0;
-        
-        for (int i = 0; i < accumulation[0].length; i++) {
-            // check if the exponent is valid
-            if (accumulation[1][i] != -1) {
-                result[0][index] = accumulation[0][i];
-                result[1][index] = accumulation[1][i];
-                index++;
-            }
+    
+        // Prepare final result array
+        int[][] result = new int[2][maxExp + 1];
+        for (int exp = maxExp; exp >= 0; exp--) {
+            result[0][maxExp - exp] = coeffAccumulator[exp];
+            result[1][maxExp - exp] = exp;
         }
-
-
-        // clear R for print
-        R.clear();
- 
+    
         return result;
-
     }
     
 }
