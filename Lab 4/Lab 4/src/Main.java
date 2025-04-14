@@ -3,6 +3,7 @@ import java.util.*;
 import java.text.*;
 import java.math.*;
 import java.util.regex.*;
+
 public class Main {
     public static int[] readArray(String inputString) {
         inputString = inputString.substring(1, inputString.length() - 1);
@@ -21,61 +22,65 @@ public class Main {
             PolynomialSolver solver = new PolynomialSolver();
 
             while (scanner.hasNextLine()) {
-                String command = scanner.nextLine().trim();
-                
-                if (command.equals("set")) {
-                    char poly = scanner.nextLine().charAt(0);
-                    String termsStr = scanner.nextLine();
-                    int[] coefficients = readArray(termsStr);
+                String option = scanner.nextLine().trim();
+                char poly1;
+                char poly2;
+                int[][] result;
+                switch(option){
+                    case "set":
+                        poly1 = scanner.nextLine().charAt(0);
+                        String termsStr = scanner.nextLine();
+                        int[] coefficients = readArray(termsStr);
+                        
+                        int[][] terms = new int[2][coefficients.length];
+                        for (int i = 0; i < coefficients.length; i++) {
+                            terms[0][i] = coefficients[i];
+                            terms[1][i] = coefficients.length - i - 1;
+                        }
                     
-                    int[][] terms = new int[2][coefficients.length];
-                    for (int i = 0; i < coefficients.length; i++) {
-                        terms[0][i] = coefficients[i];
-                        terms[1][i] = coefficients.length - i - 1;
-                    }
-                    
-                    solver.setPolynomial(poly, terms);
-                } 
-                else if (command.equals("print")) {
-                    char poly = scanner.nextLine().charAt(0);
-                    System.out.println(solver.print(poly));
-                } 
-                else if (command.equals("add")) {
-                    char poly1 = scanner.nextLine().charAt(0);
-                    char poly2 = scanner.nextLine().charAt(0);
-                    int[][] result = solver.add(poly1, poly2);
-                    solver.setPolynomial('R', result);
-                    System.out.println(solver.print('R'));
-                } 
-                else if (command.equals("sub")) {
-                    char poly1 = scanner.nextLine().charAt(0);
-                    char poly2 = scanner.nextLine().charAt(0);
-                    int[][] result = solver.subtract(poly1, poly2);
-                    solver.setPolynomial('R', result);
-                    System.out.println(solver.print('R'));
-                } 
-                else if (command.equals("mult")) {
-                    char poly1 = scanner.nextLine().charAt(0);
-                    char poly2 = scanner.nextLine().charAt(0);
-                    int[][] result = solver.multiply(poly1, poly2);
-                    solver.setPolynomial('R', result);
-                    System.out.println(solver.print('R'));
-                } 
-                else if (command.equals("clear")) {
-                    char poly = scanner.nextLine().charAt(0);
-                    solver.clearPolynomial(poly);
-                    System.out.println("[]");
-                } 
-                else if (command.equals("eval")) {
-                    char poly = scanner.nextLine().charAt(0);
-                    float value = Float.parseFloat(scanner.nextLine());
-                    System.out.println((int)solver.evaluatePolynomial(poly, value));
-                } 
-                else {
-                    throw new Exception();
+                        solver.setPolynomial(poly1, terms);
+                        break;
+                    case "print":
+                        poly1 = scanner.nextLine().charAt(0);
+                        System.out.println(solver.print(poly1));
+                        break;
+                    case "add":
+                        poly1 = scanner.nextLine().charAt(0);
+                        poly2 = scanner.nextLine().charAt(0);
+                        result = solver.add(poly1, poly2);
+                        solver.setPolynomial('R', result);
+                        System.out.println(solver.print('R'));
+                        break;
+                    case "sub":
+                        poly1 = scanner.nextLine().charAt(0);
+                        poly2 = scanner.nextLine().charAt(0);
+                        result = solver.subtract(poly1, poly2);
+                        solver.setPolynomial('R', result);
+                        System.out.println(solver.print('R'));
+                        break;
+                    case "mult":
+                        poly1 = scanner.nextLine().charAt(0);
+                        poly2 = scanner.nextLine().charAt(0);
+                        result = solver.multiply(poly1, poly2);
+                        solver.setPolynomial('R', result);
+                        System.out.println(solver.print('R'));
+                        break;
+                    case "clear":
+                        poly1 = scanner.nextLine().charAt(0);
+                        solver.clearPolynomial(poly1);
+                        System.out.println("[]");
+                        break;
+                    case "eval":
+                        poly1 = scanner.nextLine().charAt(0);
+                        float value = Float.parseFloat(scanner.nextLine());
+                        System.out.println((int)solver.evaluatePolynomial(poly1, value));
+                        break;
+                    default:
+                        throw new Exception();
                 }
             }
-        } catch (Exception e) {
+        } 
+        catch (Exception e) {
             System.out.println("Error");
         }
     }

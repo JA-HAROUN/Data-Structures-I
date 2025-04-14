@@ -5,17 +5,12 @@ class PolynomialSolver implements IPolynomialSolver {
     public DoubleLinkedList R = new DoubleLinkedList();
 
     public DoubleLinkedList charToPoly(char poly) {
-        switch (poly) {
-            case 'A':
-                return A;
-            case 'B':
-                return B;
-            case 'C':
-                return C;
-            case 'R':
-                return R;
-            default:
-                throw new IllegalArgumentException("Invalid polynomial name");
+        switch(poly) {
+            case 'A': return A;
+            case 'B': return B;
+            case 'C': return C;
+            case 'R': return R;
+            default: throw new IllegalArgumentException("Invalid polynomial name");
         }
     }
 
@@ -30,9 +25,19 @@ class PolynomialSolver implements IPolynomialSolver {
             polynomial.clear();
         }
 
-        for (int i = 0; i < terms[0].length; i++) {
-            polynomial.add(new int[] { terms[0][i], terms[0].length - i - 1 });
+        // if not R
+        if (poly != 'R') {
+            for (int i = 0; i < terms[0].length; i++) {
+                polynomial.add(new int[] { terms[0][i], terms[0].length - i - 1 });
+            }
         }
+        // else  (is R) take the exponents from the second row in terms
+        else {
+            for (int i = 0; i < terms[1].length; i++) {
+                polynomial.add(new int[] { terms[0][i], terms[1][i] });
+            }
+        }
+        
     }
 
     @Override
@@ -44,14 +49,15 @@ class PolynomialSolver implements IPolynomialSolver {
 
         StringBuilder result = new StringBuilder();
         boolean firstTerm = true;
+        boolean allZero = true;
 
         for (int i = 0; i < polynomial.size(); i++) {
             int[] term = (int[]) polynomial.get(i);
             int coefficient = term[0];
             int exponent = term[1];
 
-            if (coefficient == 0)
-                continue;
+            if (coefficient == 0){continue;}
+            allZero = false;
 
             if (!firstTerm) {
                 if (coefficient > 0) {
@@ -65,7 +71,7 @@ class PolynomialSolver implements IPolynomialSolver {
                 if (coefficient == 1 && exponent != 0) {
                     // Don't print 1 before x
                 } else if (coefficient == -1 && exponent != 0) {
-                    result.append("-");
+                    result.append("-1");
                 } else {
                     result.append(coefficient);
                 }
@@ -80,7 +86,11 @@ class PolynomialSolver implements IPolynomialSolver {
             firstTerm = false;
         }
 
-        return result.toString();
+        if (allZero) {
+            return "0";
+        }
+
+        return result.length() == 0 ? "0" : result.toString();
     }
 
     @Override
@@ -134,75 +144,82 @@ class PolynomialSolver implements IPolynomialSolver {
 
     @Override
     public int[][] subtract(char poly1, char poly2) {
-        DoubleLinkedList p1 = charToPoly(poly1);
-        DoubleLinkedList p2 = charToPoly(poly2);
-        if (p1.isEmpty() || p2.isEmpty()) {
-            throw new IllegalArgumentException("Polynomials are empty");
-        }
-
-        int maxSize = Math.max(p1.size(), p2.size());
-        int[][] result = new int[2][maxSize];
-
-        for (int i = maxSize - 1; i >= 0; i--) {
-            int coeff1 = 0, coeff2 = 0;
-            if (i < p1.size()) {
-                int[] term = (int[]) p1.get(p1.size() - 1 - i);
-                coeff1 = term[0];
-            }
-            if (i < p2.size()) {
-                int[] term = (int[]) p2.get(p2.size() - 1 - i);
-                coeff2 = term[0];
-            }
-            result[0][maxSize - 1 - i] = coeff1 - coeff2;
-            result[1][maxSize - 1 - i] = i;
-        }
-
-        return result;
+    DoubleLinkedList p1 = charToPoly(poly1);
+    DoubleLinkedList p2 = charToPoly(poly2);
+    
+    if (p1.isEmpty() || p2.isEmpty()) {
+        throw new IllegalArgumentException("Polynomials are empty");
     }
+
+    // Find maximum exponent to determine result size
+    int maxExp1 = ((int[])p1.get(0))[1]; // First term has highest exponent
+    int maxExp2 = ((int[])p2.get(0))[1];
+    int maxResultExp = Math.max(maxExp1, maxExp2);
+    
+    // Initialize result array with all possible exponents
+    int[][] result = new int[2][maxResultExp + 1];
+    
+    // Initialize exponents in descending order
+    for (int i = 0; i <= maxResultExp; i++) {
+        result[1][i] = maxResultExp - i;
+    }
+
+    // Process first polynomial (add terms)
+    for (int i = 0; i < p1.size(); i++) {
+        int[] term = (int[]) p1.get(i);
+        int exp = term[1];
+        result[0][maxResultExp - exp] += term[0];
+    }
+
+    // Process second polynomial (subtract terms)
+    for (int i = 0; i < p2.size(); i++) {
+        int[] term = (int[]) p2.get(i);
+        int exp = term[1];
+        result[0][maxResultExp - exp] -= term[0];
+    }
+
+    return result;
+}
+
 
     @Override
     public int[][] multiply(char poly1, char poly2) {
-        // Get the polynomial lists
-        DoubleLinkedList polyList1 = charToPoly(poly1);
-        DoubleLinkedList polyList2 = charToPoly(poly2);
-
-        // Check for empty polynomials
-        if (polyList1.isEmpty() || polyList2.isEmpty()) {
+        DoubleLinkedList p1 = charToPoly(poly1);
+        DoubleLinkedList p2 = charToPoly(poly2);
+        
+        if (p1.isEmpty() || p2.isEmpty()) {
             throw new IllegalArgumentException("Polynomials are empty");
         }
-
-        // Calculate maximum exponents based on polynomial sizes
-        int size1 = polyList1.size();
-        int size2 = polyList2.size();
-        int maxExp = (size1 - 1) + (size2 - 1);
-
-        // Create accumulation array for coefficients
-        int[] coeffAccumulator = new int[maxExp + 1];
-
+    
+        // Calculate maximum exponent based on polynomial sizes
+        int maxExp = (p1.size() - 1) + (p2.size() - 1);
+        int[] resultCoeffs = new int[maxExp + 1]; // Array to accumulate coefficients
+    
         // Multiply all term combinations
-        for (int i = 0; i < size1; i++) {
-            int[] term1 = (int[]) polyList1.get(i);
+        for (int i = 0; i < p1.size(); i++) {
+            int[] term1 = (int[]) p1.get(i);
             int coeff1 = term1[0];
-            int exp1 = size1 - 1 - i; // Calculate exponent based on position
-
-            for (int j = 0; j < size2; j++) {
-                int[] term2 = (int[]) polyList2.get(j);
+            int exp1 = p1.size() - 1 - i; // Calculate exponent from position
+    
+            for (int j = 0; j < p2.size(); j++) {
+                int[] term2 = (int[]) p2.get(j);
                 int coeff2 = term2[0];
-                int exp2 = size2 - 1 - j; // Calculate exponent based on position
-
-                int resultExp = exp1 + exp2;
-                coeffAccumulator[resultExp] += coeff1 * coeff2;
+                int exp2 = p2.size() - 1 - j; // Calculate exponent from position
+    
+                int productExp = exp1 + exp2;
+                resultCoeffs[productExp] += coeff1 * coeff2;
             }
         }
-
-        // Prepare final result array
+    
+        // Prepare the result array in descending exponent order
         int[][] result = new int[2][maxExp + 1];
         for (int exp = maxExp; exp >= 0; exp--) {
-            result[0][maxExp - exp] = coeffAccumulator[exp];
+            result[0][maxExp - exp] = resultCoeffs[exp];
             result[1][maxExp - exp] = exp;
         }
-
+    
         return result;
-
     }
+
+
 }
