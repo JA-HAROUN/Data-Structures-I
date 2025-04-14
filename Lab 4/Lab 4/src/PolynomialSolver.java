@@ -1,3 +1,4 @@
+
 class PolynomialSolver implements IPolynomialSolver {
     public DoubleLinkedList A = new DoubleLinkedList();
     public DoubleLinkedList B = new DoubleLinkedList();
@@ -49,7 +50,7 @@ class PolynomialSolver implements IPolynomialSolver {
 
         StringBuilder result = new StringBuilder();
         boolean firstTerm = true;
-        boolean allZero = true;
+        boolean isAllZero = true;
 
         for (int i = 0; i < polynomial.size(); i++) {
             int[] term = (int[]) polynomial.get(i);
@@ -57,7 +58,7 @@ class PolynomialSolver implements IPolynomialSolver {
             int exponent = term[1];
 
             if (coefficient == 0){continue;}
-            allZero = false;
+            isAllZero = false;
 
             if (!firstTerm) {
                 if (coefficient > 0) {
@@ -70,9 +71,8 @@ class PolynomialSolver implements IPolynomialSolver {
             } else {
                 if (coefficient == 1 && exponent != 0) {
                     // Don't print 1 before x
-                } else if (coefficient == -1 && exponent != 0) {
-                    result.append("-1");
-                } else {
+                } 
+                else {
                     result.append(coefficient);
                 }
 
@@ -86,12 +86,13 @@ class PolynomialSolver implements IPolynomialSolver {
             firstTerm = false;
         }
 
-        if (allZero) {
+        if (isAllZero) {
             return "0";
         }
 
         return result.length() == 0 ? "0" : result.toString();
     }
+
 
     @Override
     public void clearPolynomial(char poly) {
@@ -144,44 +145,33 @@ class PolynomialSolver implements IPolynomialSolver {
 
     @Override
     public int[][] subtract(char poly1, char poly2) {
-    DoubleLinkedList p1 = charToPoly(poly1);
-    DoubleLinkedList p2 = charToPoly(poly2);
+        DoubleLinkedList p1 = charToPoly(poly1);
+        DoubleLinkedList p2 = charToPoly(poly2);
+        if (p1.isEmpty() || p2.isEmpty()) {
+            throw new IllegalArgumentException("Polynomials are empty");
+        }
+
+        int maxSize = Math.max(p1.size(), p2.size());
+        int[][] result = new int[2][maxSize];
+
+        for (int i = maxSize - 1; i >= 0; i--) {
+            int coeff1 = 0, coeff2 = 0;
+            if (i < p1.size()) {
+                int[] term = (int[]) p1.get(p1.size() - 1 - i);
+                coeff1 = term[0];
+            }
+            if (i < p2.size()) {
+                int[] term = (int[]) p2.get(p2.size() - 1 - i);
+                coeff2 = term[0];
+            }
+            // same as add but difference in here
+            result[0][maxSize - 1 - i] = coeff1 - coeff2;
+            result[1][maxSize - 1 - i] = i;
+        }
+
+        return result;
+    }
     
-    if (p1.isEmpty() || p2.isEmpty()) {
-        throw new IllegalArgumentException("Polynomials are empty");
-    }
-
-    // Find maximum exponent to determine result size
-    int maxExp1 = ((int[])p1.get(0))[1]; // First term has highest exponent
-    int maxExp2 = ((int[])p2.get(0))[1];
-    int maxResultExp = Math.max(maxExp1, maxExp2);
-    
-    // Initialize result array with all possible exponents
-    int[][] result = new int[2][maxResultExp + 1];
-    
-    // Initialize exponents in descending order
-    for (int i = 0; i <= maxResultExp; i++) {
-        result[1][i] = maxResultExp - i;
-    }
-
-    // Process first polynomial (add terms)
-    for (int i = 0; i < p1.size(); i++) {
-        int[] term = (int[]) p1.get(i);
-        int exp = term[1];
-        result[0][maxResultExp - exp] += term[0];
-    }
-
-    // Process second polynomial (subtract terms)
-    for (int i = 0; i < p2.size(); i++) {
-        int[] term = (int[]) p2.get(i);
-        int exp = term[1];
-        result[0][maxResultExp - exp] -= term[0];
-    }
-
-    return result;
-}
-
-
     @Override
     public int[][] multiply(char poly1, char poly2) {
         DoubleLinkedList p1 = charToPoly(poly1);
@@ -220,6 +210,4 @@ class PolynomialSolver implements IPolynomialSolver {
     
         return result;
     }
-
-
 }
