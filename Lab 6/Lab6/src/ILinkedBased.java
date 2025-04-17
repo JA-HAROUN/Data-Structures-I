@@ -1,2 +1,2 @@
-public class ILinkedBase {
+public class ILinkedBased {
 }
