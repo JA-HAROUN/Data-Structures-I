@@ -181,26 +181,60 @@ class Evaluator implements IExpressionEvaluator {
         this.c = c;
     }
 
+    public boolean isVariable(char token) {
+        return token == 'a' || token == 'b' || token == 'c';
+    }
+
     public int precedence(char operator) {
         switch (operator) {
-            case '+':
-            case '-':
-                return 1;
+            
+
+            case '(':
+            case ')':
+                return 5;
+
+
+            case '^':
+                return 3;
+
             case '*':
             case '/':
                 return 2;
-            case '^':
-                return 3;
-            case '(':
-            case ')':
-                return 4;
+
+            case '+':
+            case '-':
+            case 'u':
+                return 1;
+
             default:
                 return 0;
         }
     }
 
-    public boolean isVariable(char token) {
-        return token == 'a' || token == 'b' || token == 'c';
+    public boolean tripleMinus(String expression, int i) {
+        if (i + 3 < expression.length()
+                &&
+                expression.charAt(i) == '-'
+                &&
+                expression.charAt(i + 1) == '-'
+                &&
+                expression.charAt(i + 2) == '-') {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean doubleMinus(String expression, int i) {
+        if (i + 2 < expression.length()
+                &&
+                expression.charAt(i) == '-'
+                &&
+                expression.charAt(i + 1) == '-') {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     // passed the run code
@@ -210,42 +244,178 @@ class Evaluator implements IExpressionEvaluator {
         postfix.clear();
         operators.clear();
 
+        // filter the expression
+        StringBuilder filteredExpression = new StringBuilder();
+
+        for (int i = 0; i < expression.length(); i++) {
+            // it should be as it is but just handle the -- and --- cases
+            char token = expression.charAt(i);
+
+            if (token == '-'){
+                // triple
+                if (tripleMinus(expression, i)) {
+                    if (i == 0) {
+                        if (
+                            isVariable(expression.charAt(i + 3))
+                            ||
+                            expression.charAt(i + 3) == '('
+                        ) {
+                            // unary
+                            filteredExpression.append('u');
+                            i += 2;
+                        }
+                    }
+                    else {
+                        // minus
+                        if (
+                            (isVariable(expression.charAt(i - 1)) || expression.charAt(i - 1) == ')')
+                            &&
+                            (isVariable(expression.charAt(i + 3)) || expression.charAt(i + 3) == '(')
+                        ) {
+                            // just push the token and jump
+                            filteredExpression.append('-');
+                            i += 2;
+                        }
+                        else if (
+                            precedence(expression.charAt(i - 1)) != 0
+                            &&
+                            (isVariable(expression.charAt(i + 3)) || expression.charAt(i + 3) == '(')
+                        ) {
+                            // just push the token and jump
+                            filteredExpression.append('u');
+                            i += 2;
+                        }
+
+                    }
+                }
+                // double
+                else if (doubleMinus(expression, i)) {
+                    if (i == 0) {
+                        // just jump to the variable or (
+                        i += 1;
+                    }
+                    else {
+                        // if variable or ) before and after it, then put +
+                        if (
+                            (isVariable(expression.charAt(i - 1)) || expression.charAt(i - 1) == ')')
+                            &&
+                            (isVariable(expression.charAt(i + 2)) || expression.charAt(i + 2) == '(')
+                        ) {
+                            // just push the token and jump
+                            filteredExpression.append('+');
+                            i += 1;
+                        }
+
+                        else if (
+                            precedence(expression.charAt(i - 1)) != 0
+                            &&
+                            (isVariable(expression.charAt(i + 2)) || expression.charAt(i + 2) == '(')
+                        ) {
+                            // just push the token and jump
+                            i += 1;
+                        }
+
+                    }
+                }
+                // single
+                else {
+                    if (i == 0){
+                        if (
+                            i + 1 < expression.length()
+                            && 
+                            (
+                                isVariable(expression.charAt(i + 1))
+                                ||
+                                expression.charAt(i + 1) == '('
+                            )
+                        ) {
+                            // unary
+                            filteredExpression.append('u');
+                        }
+                    }
+                    else {
+                        // before it variable or ) => it is minux leave it
+                        if (
+                            isVariable(expression.charAt(i - 1)) 
+                            ||
+                            expression.charAt(i - 1) == ')'
+                            ) {
+                            // just push the token
+                            filteredExpression.append(token);
+
+                        }
+                        // before it operator => it is unary
+                        else if (precedence(expression.charAt(i - 1)) != 0) {
+                            // just push the token
+                            filteredExpression.append('u');
+                        }
+                        // before it ( => it is unary
+                        else if (expression.charAt(i - 1) == '(') {
+                            // just push the token
+                            filteredExpression.append('u');
+                        }
+
+                    }
+                }
+            
+            }
+
+            // check for leading +
+            // check for -+ or *+ or /+ or ^+
+            // just remove the +
+            else if (token == '+') {
+                // check for leading +
+                if (i == 0) {
+                    continue;
+                }
+                else {
+                    filteredExpression.append(token);
+                }
+
+            }
+
+            else {
+                // just push the token
+                filteredExpression.append(token);
+            }
+
+        }
+
+        expression = filteredExpression.toString();
+
+        char lastElement = expression.charAt(expression.length() - 1);
+        char firstElement = expression.charAt(0);
+        switch (lastElement) {
+            case '*':
+            case '/':
+            case '+':
+            case '-':
+            case '^':
+            case '(':
+            case 'u':
+                throw new IllegalArgumentException();
+        }
+        switch (firstElement) {
+            case '*':
+            case '/':
+            case '+':
+            case '-':
+            case '^':
+                throw new IllegalArgumentException();
+        }
+
+        // to postfix
         for (int i = 0; i < expression.length(); i++) {
 
             char token = expression.charAt(i);
 
             // case 1 => variable
-            // if --a => a
-            // else if -a => a-
-            // else just push the operator
             if (isVariable(token)) {
-
-                if (i >= 2 && expression.charAt(i - 1) == '-' && expression.charAt(i - 2) == '-') {
-                    // --a => a
-                    // then the second minux removed the first from the operators and put it in the
-                    // postfix, so I should remove one from postfix and one from the operators
-
-                    operators.pop();
-                    postfix.pop();
-                    postfix.push(token);
-                    if (i == expression.length() - 1) {
-                        postfix.push('+');
-                    }
-
-                }
-
-                else if (i >= 1 && operators.size() == 1 && (char) operators.peek() == '-' && postfix.size() == 0) {
-                    // -a => a-
-                    // then the second minux removed the first from the operators and put it in the
-                    // postfix, so I should remove one from postfix and one from the operators
-                    operators.pop();
-                    postfix.push(-1 * Integer.parseInt(String.valueOf(token)));
-                }
-
-                else {
-
+                if (!operators.isEmpty() && (char) operators.peek() == 'u') {
                     postfix.push(token);
 
+                } else {
+                    postfix.push(token);
                 }
 
             }
@@ -254,27 +424,36 @@ class Evaluator implements IExpressionEvaluator {
             else if (precedence(token) != 0) {
                 // check which level
                 int level = precedence(token);
-
-                if (level == 4) {
+                
+                // case 2 => ()
+                if (level == 5) {
                     if (token == '(') {
                         operators.push(token);
-                    } else {
+                    } 
+
+                    else if (token == ')') {
                         while (!operators.isEmpty()
                                 &&
-                                (char) operators.peek() != '(') {
+                                (char) operators.peek() != '('
+                        )
+                        {
                             postfix.push(operators.pop());
                         }
-                        // pop the '('
+                        // remove the opening bracket
                         operators.pop();
+                        
                     }
                 }
 
+                // case 2 => operator
                 else {
                     while (!operators.isEmpty()
                             &&
-                            (char) operators.peek() != '('
+                            precedence((char) operators.peek()) >= level
                             &&
-                            precedence((char) operators.peek()) >= level) {
+                            (char) operators.peek() != '('
+                    )
+                    {
                         postfix.push(operators.pop());
                     }
                     operators.push(token);
@@ -291,14 +470,23 @@ class Evaluator implements IExpressionEvaluator {
 
         // pop all the operators
         while (!operators.isEmpty()) {
-            if ((char) operators.peek() == '(') {
-                throw new IllegalArgumentException("Mismatched parentheses");
+            if (
+                (char) operators.peek() == '('
+                ||
+                (char) operators.peek() == ')' 
+                ) {
+                throw new IllegalArgumentException();
             }
             postfix.push(operators.pop());
         }
 
-        return postfix.toString();
+        String result = postfix.toString();
+        // if found u replace it with -
+        result = result.replaceAll("u", "-");
+
+        return result;
     }
+
 
     public void checkPostfixCount() {
         if (postfix.size() < 2) {
@@ -328,7 +516,7 @@ class Evaluator implements IExpressionEvaluator {
 
             // case 2 => operator
             else if (precedence(token) != 0) {
-                
+
                 int x, y;
 
                 if (token == '+') {
@@ -340,7 +528,7 @@ class Evaluator implements IExpressionEvaluator {
                 } else if (token == '-') {
                     // case 2 => either -x or x-y
                     if (postfix.size() == 1) {
-                        postfix.push( -1 * ((Integer) postfix.pop()) );
+                        postfix.push(-1 * ((Integer) postfix.pop()));
                     } else {
                         checkPostfixCount();
                         y = (Integer) postfix.pop();
