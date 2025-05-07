@@ -1,11 +1,4 @@
-import java.io.*;
-import java.util.*;
-import java.text.*;
-import java.math.*;
-import java.util.regex.*;
-
-public class LinkedListQueue implements IQueue, ILinkedBased {
-
+public class LinkedListQueue  implements IQueue {
 
     public class Node {
         Object data;
@@ -24,7 +17,7 @@ public class LinkedListQueue implements IQueue, ILinkedBased {
             this.prev = prev;
         }
     }
-
+    
     public class DLL {
         Node header;
         Node trailer;
@@ -93,28 +86,23 @@ public class LinkedListQueue implements IQueue, ILinkedBased {
     }
 
     private DLL list;
-    private int size;
-    private Node front;
-    private Node rear;
 
     // constructor
     public LinkedListQueue() {
         list = new DLL();
-        size = 0;
-        front = null;
-        rear = null;
     }
 
     @Override
     public void enqueue(Object item) {
         list.addFirst(item);
-        if (list.size() == 1) {
-            front = list.header.next;
-            rear = list.trailer.prev;
+        if (list.isEmpty()) {
+            list.header = list.trailer;
+            list.trailer = list.header;
         } else {
-            rear = list.trailer.prev;
+            list.header = list.header.next;
+            list.trailer = list.trailer.prev;
         }
-        size++;
+        list.size++;
     }
 
     @Override
@@ -123,12 +111,13 @@ public class LinkedListQueue implements IQueue, ILinkedBased {
             throw new IllegalStateException("Queue is empty");
         }
         Object item = list.removeLast();
+        list.size--;
         if (list.isEmpty()) {
-            front = null;
-            rear = null;
+            list.header = list.trailer;
+            list.trailer = list.header;
         } else {
-            front = list.header.next;
-            rear = list.trailer.prev;
+            list.header = list.header.next;
+            list.trailer = list.trailer.prev;
         }
         return item;
     }
@@ -157,6 +146,7 @@ public class LinkedListQueue implements IQueue, ILinkedBased {
         }
         sb.append("]");
         System.out.println(sb.toString());
+        
     }
 
     public void reverseQueue() {
@@ -168,7 +158,10 @@ public class LinkedListQueue implements IQueue, ILinkedBased {
     public void readData(String elements) {
         // This method should read the elements from the input and add them to the list [1, 2, 3, 4, 5]
 
-        if (elements.equals("[]")){
+        if (elements == "[]"){
+            list.size = 0;
+            list.header.next = list.trailer;
+            list.trailer.prev = list.header;
             return;
         }
 
@@ -181,58 +174,5 @@ public class LinkedListQueue implements IQueue, ILinkedBased {
         }
 
     }
-
-
-
-    public static void main(String[] args) {
-        /* Enter your code here. Read input from STDIN. Print output to STDOUT. Your class should be named Solution. */
-
-
-        try {
-
-            Scanner scanner = new Scanner(System.in);
-            String elements = scanner.nextLine().trim();
-            String order = scanner.nextLine().trim();
-
-            LinkedListQueue LinkedListQueue = new LinkedListQueue();
-            LinkedListQueue.readData(elements);
-
-            if (order.equals("enqueue")){
-                String element = scanner.nextLine().trim();
-                LinkedListQueue.enqueue(element);
-                LinkedListQueue.printQueue();
-            }
-
-            else if (order.equals("dequeue")) {
-                LinkedListQueue.dequeue();
-                LinkedListQueue.printQueue();
-            }
-
-            else if (order.equals("isEmpty")) {
-                if (LinkedListQueue.isEmpty()) {
-                    System.out.println("True");
-                } else {
-                    System.out.println("False");
-                }
-            }
-
-            else if (order.equals("size")) {
-                System.out.println(LinkedListQueue.size());
-            }
-
-            else {
-                throw new IllegalArgumentException("Invalid order");
-            }
-
-        }
-        catch (Exception e) {
-            System.out.println("Error");
-        }
-
-
-
-
-    }
-
 
 }
